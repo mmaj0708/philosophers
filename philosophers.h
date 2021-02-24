@@ -6,7 +6,7 @@
 /*   By: mmaj <mmaj@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/23 11:50:54 by mmaj              #+#    #+#             */
-/*   Updated: 2021/02/23 16:58:15 by mmaj             ###   ########.fr       */
+/*   Updated: 2021/02/24 12:19:30 by mmaj             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,22 +19,36 @@
 #include <pthread.h>
 #include <stdlib.h>
 
+/*
+**
+** stat ded = 0
+** stat eating = 1
+** stat sleeping = 2
+** stat thinking = 3
+**
+*/
+
 typedef	struct	s_list
 {
 	struct	s_list	*next;
 	int				philo_pos;
 	int				is_ded;
+	int				stat;
+	int				checker;
 	
+	pthread_mutex_t	*fork1;
+	pthread_mutex_t	*fork2;
 	int ttd;
 	int tte;
 	int tts;
+	int	tla;
 	pthread_t		th;
 }				t_list;
 
 
-#define TTD 500000
-#define TTE 200000
-#define TTS 500000
+#define TTD 500
+#define TTE 200
+#define TTS 500
 
 pthread_mutex_t lock;
 
