@@ -6,7 +6,7 @@
 /*   By: mmaj <mmaj@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 13:50:44 by mmaj              #+#    #+#             */
-/*   Updated: 2021/02/24 12:43:31 by mmaj             ###   ########.fr       */
+/*   Updated: 2021/02/24 15:51:14 by mmaj             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,8 @@ t_list	*lstnew(int i)
 	new->ttd = TTD;
 	new->tte = TTE;
 	new->tts = TTS;
+	// new->stat = 3;
+	// new->tla = new->ttd;
 	new->philo_pos = i;
 	new->next = NULL;
 
@@ -79,24 +81,29 @@ void	*philo_life(void *lst)
 	list = lst;
 	while (1)
 	{
-		list->stat = 3;
+		// list->stat = 3;
+		// list->tla = gettime(g_time_start) + list->ttd - list->tts;
 		pthread_mutex_lock(list->fork1);
-		printf("%ld : philo %d has taken fork one\n", gettime(g_time_start), list->philo_pos);
 		pthread_mutex_lock(list->fork2);
+		// printf("%ld : philo %d has taken fork one\n", gettime(g_time_start), list->philo_pos);
+		// printf("%ld : philo %d has taken fork two\n", gettime(g_time_start), list->philo_pos);
+		write(1, "fork_one\n", 9);
+		write(1, "fork_two\n", 9);
 		list->stat = 1;
-		printf("%ld : philo %d has taken fork two\n", gettime(g_time_start), list->philo_pos);
-		printf("%ld : philo %d is eating\n", gettime(g_time_start), list->philo_pos);
+		// printf("%ld : philo %d is eating\n", gettime(g_time_start), list->philo_pos);
+		write(1, "eating\n", 7);
 		usleep(list->tte * 1000);
+		list->stat = 2;
+		list->tla = gettime(g_time_start) + list->ttd;
 		pthread_mutex_unlock(list->fork1);
 		pthread_mutex_unlock(list->fork2);
 		
-		list->stat = 2;
-		list->tla = gettime(g_time_start) + list->ttd;
-		printf("%ld : philo %d will die after %d\n", gettime(g_time_start), list->philo_pos, list->tla);
-		printf("%ld : philo %d is sleeping\n", gettime(g_time_start), list->philo_pos);
+		// printf("%ld : philo %d will die after %d\n", gettime(g_time_start), list->philo_pos, list->tla);
+		// printf("%ld : philo %d is sleeping\n", gettime(g_time_start), list->philo_pos);
+		write(1, "sleeping\n", 9);
 		usleep(list->tts * 1000);
 		
-		printf("%ld : philo %d is thinking\n", gettime(g_time_start), list->philo_pos);
+		// printf("%ld : philo %d is thinking\n", gettime(g_time_start), list->philo_pos);
 	}
 	return (0);
 }
@@ -105,9 +112,11 @@ int	death_checker(t_list *list)
 {
 	while (1)
 	{
-		printf("DEATH CHECKER \n");
-		if (list->stat != 2 && gettime(g_time_start) >= list->tla)
+		if (list->stat != 1 && gettime(g_time_start) >= list->tla)
+		{
+			printf("list->philo_pos = %d, list->stat = %d, gettime = %ld, list->tla = %d\n", list->philo_pos, list->stat, gettime(g_time_start), list->tla);
 			break;
+		}
 		list = list->next;
 	}
 	// arreter tous les proccess;
@@ -133,10 +142,14 @@ int	launch_philo(t_list	*list, int n_philo)
 	make_list_loop(list);
 	while (n_philo > 0)
 	{
+		list->stat = 3;
+		list->tla = gettime(g_time_start) + list->ttd;
 		pthread_create(&list->th, NULL, philo_life, (void *)list);
+		// printf("check nb thread\n");
 		list = list->next;
 		n_philo--;
 	}
+	// pthread_join(save->th, NULL);
 	death_checker(save);
 	return (0);
 }
@@ -186,7 +199,7 @@ void	affect_fork(int n_philo, t_list *list)
 int main()
 {
 	struct timeval	start;
-	int				n_philo = 5;
+	int				n_philo = N_PHILO;
 	t_list			*list;
 	t_list			*head_list;
 	int				i = 1;

@@ -6,7 +6,7 @@
 /*   By: mmaj <mmaj@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/23 11:50:54 by mmaj              #+#    #+#             */
-/*   Updated: 2021/02/24 12:19:30 by mmaj             ###   ########.fr       */
+/*   Updated: 2021/02/24 15:37:50 by mmaj             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,10 @@ typedef	struct	s_list
 }				t_list;
 
 
-#define TTD 500
-#define TTE 200
-#define TTS 500
+#define TTD 1000
+#define TTE 300
+#define TTS 300
+#define N_PHILO 10
 
 pthread_mutex_t lock;
 
