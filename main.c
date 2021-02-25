@@ -6,7 +6,7 @@
 /*   By: mmaj <mmaj@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 13:50:44 by mmaj              #+#    #+#             */
-/*   Updated: 2021/02/25 13:12:41 by mmaj             ###   ########.fr       */
+/*   Updated: 2021/02/25 13:21:49 by mmaj             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,10 @@ void	*philo_life(void *lst)
 		printf("%ld : philo %d is eating\n", gettime(g_time_start), list->philo_pos);
 		usleep(list->tte * 1000);
 		if (list->n_meal != -1)
+		{
 			list->n_meal--;
+			printf("meal left for philo %d = %d\n", list->philo_pos, list->n_meal);
+		}
 		// if (list->n_meal == 0)
 		// {
 		// 	printf("%ld : philo %d has taken fork two\n", gettime(g_time_start), list->philo_pos);
@@ -145,7 +148,7 @@ int	death_checker(t_list *list)
 {
 	while (1)
 	{
-		if ((list->stat != 1 && gettime(g_time_start) >= list->tla) || list->n_meal == 0)
+		if ((list->stat != 1 && gettime(g_time_start) >= list->tla))
 		{
 			printf("list->philo_pos = %d, list->stat = %d, gettime = %ld, list->tla = %d\n", list->philo_pos, list->stat, gettime(g_time_start), list->tla);
 			break;
@@ -154,8 +157,8 @@ int	death_checker(t_list *list)
 	}
 	if ((list->stat != 1 && gettime(g_time_start) >= list->tla))
 		printf("%ld : philo %d died!!!\n", gettime(g_time_start), list->philo_pos);
-	if (list->n_meal == 0)
-		printf("%ld : philo %d eated all the meals !!!\n", gettime(g_time_start), list->philo_pos);
+	// if (list->n_meal == 0)
+	// 	printf("%ld : philo %d eated all the meals !!!\n", gettime(g_time_start), list->philo_pos);
 	return (0);
 }
 
@@ -220,6 +223,7 @@ void	affect_fork(int n_philo, t_list *list)
 	{
 		list->fork1 = lock + ((n_philo - 2 + list->philo_pos) % n_philo);
 		list->fork2 = lock + list->philo_pos - 1;
+		list->checker = list->philo_pos;
 		list = list->next;
 	}
 }
