@@ -6,7 +6,7 @@
 /*   By: mmaj <mmaj@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/23 11:50:54 by mmaj              #+#    #+#             */
-/*   Updated: 2021/02/24 15:37:50 by mmaj             ###   ########.fr       */
+/*   Updated: 2021/02/25 12:27:46 by mmaj             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,14 +42,26 @@ typedef	struct	s_list
 	int tte;
 	int tts;
 	int	tla;
+	int	n_philo;
+	int	n_meal;
 	pthread_t		th;
 }				t_list;
 
+typedef	struct	s_param
+{
+	int ttd;
+	int tte;
+	int tts;
+	int	n_philo;
+	int	n_meal;
+}				t_param;
 
-#define TTD 1000
-#define TTE 300
-#define TTS 300
-#define N_PHILO 10
+
+#define TTD 810
+#define TTE 200
+#define TTS 400
+#define N_PHILO 12
+#define FAILURE -1
 
 pthread_mutex_t lock;
 

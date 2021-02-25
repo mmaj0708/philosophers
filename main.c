@@ -6,11 +6,48 @@
 /*   By: mmaj <mmaj@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 13:50:44 by mmaj              #+#    #+#             */
-/*   Updated: 2021/02/24 15:51:14 by mmaj             ###   ########.fr       */
+/*   Updated: 2021/02/25 13:12:41 by mmaj             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
+
+void	check_param(t_param *param)
+{
+	printf("check param\n");
+	printf("param->n_philo = %d\n", param->n_philo);
+	printf("param->ttd = %d\n", param->ttd);
+	printf("param->tte = %d\n", param->tte);
+	printf("param->tts = %d\n", param->tts);
+	printf("param->meal = %d\n", param->n_meal);
+}
+
+int	ft_atoi(char *str)
+{
+	long			i;
+	long			sign;
+	unsigned int	nb;
+
+	i = 0;
+	sign = 1;
+	nb = 0;
+	while (str[i] == 32 || str[i] == '\t' || str[i] == '\n' ||
+	str[i] == '\r' || str[i] == '\v' || str[i] == '\f')
+		i++;
+	if (str[i] == '-' || str[i] == '+')
+	{
+		if (str[i] == '-')
+			sign = sign * -1;
+		i++;
+	}
+	while (str[i] >= '0' && str[i] <= '9')
+	{
+		nb = nb * 10;
+		nb = nb + str[i] - 48;
+		i++;
+	}
+	return ((int)(nb * sign));
+}
 
 void check_list(t_list *list)
 {
@@ -56,16 +93,15 @@ long int	gettime(struct timeval start)
 	return (time);
 }
 
-t_list	*lstnew(int i)
+t_list	*lstnew(int i, t_param *param)
 {
 	t_list	*new;
 
 	new = malloc(sizeof(t_list)); // free!
-	new->ttd = TTD;
-	new->tte = TTE;
-	new->tts = TTS;
-	// new->stat = 3;
-	// new->tla = new->ttd;
+	new->ttd = param->ttd;
+	new->tte = param->tte;
+	new->tts = param->tts;
+	new->n_meal = param->n_meal;
 	new->philo_pos = i;
 	new->next = NULL;
 
@@ -76,34 +112,31 @@ void	*philo_life(void *lst)
 {
 	t_list *list;
 	long int next_tte;
-		// printf("check\n");
 
 	list = lst;
 	while (1)
 	{
-		// list->stat = 3;
-		// list->tla = gettime(g_time_start) + list->ttd - list->tts;
 		pthread_mutex_lock(list->fork1);
 		pthread_mutex_lock(list->fork2);
-		// printf("%ld : philo %d has taken fork one\n", gettime(g_time_start), list->philo_pos);
-		// printf("%ld : philo %d has taken fork two\n", gettime(g_time_start), list->philo_pos);
-		write(1, "fork_one\n", 9);
-		write(1, "fork_two\n", 9);
+		printf("%ld : philo %d has taken fork one\n", gettime(g_time_start), list->philo_pos);
+		printf("%ld : philo %d has taken fork two\n", gettime(g_time_start), list->philo_pos);
 		list->stat = 1;
-		// printf("%ld : philo %d is eating\n", gettime(g_time_start), list->philo_pos);
-		write(1, "eating\n", 7);
+		printf("%ld : philo %d is eating\n", gettime(g_time_start), list->philo_pos);
 		usleep(list->tte * 1000);
+		if (list->n_meal != -1)
+			list->n_meal--;
+		// if (list->n_meal == 0)
+		// {
+		// 	printf("%ld : philo %d has taken fork two\n", gettime(g_time_start), list->philo_pos);
+		// 	break;
+		// }
 		list->stat = 2;
 		list->tla = gettime(g_time_start) + list->ttd;
 		pthread_mutex_unlock(list->fork1);
 		pthread_mutex_unlock(list->fork2);
-		
-		// printf("%ld : philo %d will die after %d\n", gettime(g_time_start), list->philo_pos, list->tla);
-		// printf("%ld : philo %d is sleeping\n", gettime(g_time_start), list->philo_pos);
-		write(1, "sleeping\n", 9);
+		printf("%ld : philo %d is sleeping\n", gettime(g_time_start), list->philo_pos);
 		usleep(list->tts * 1000);
-		
-		// printf("%ld : philo %d is thinking\n", gettime(g_time_start), list->philo_pos);
+		printf("%ld : philo %d is thinking\n", gettime(g_time_start), list->philo_pos);
 	}
 	return (0);
 }
@@ -112,15 +145,17 @@ int	death_checker(t_list *list)
 {
 	while (1)
 	{
-		if (list->stat != 1 && gettime(g_time_start) >= list->tla)
+		if ((list->stat != 1 && gettime(g_time_start) >= list->tla) || list->n_meal == 0)
 		{
 			printf("list->philo_pos = %d, list->stat = %d, gettime = %ld, list->tla = %d\n", list->philo_pos, list->stat, gettime(g_time_start), list->tla);
 			break;
 		}
 		list = list->next;
 	}
-	// arreter tous les proccess;
-	printf("%ld : philo %d died!!!\n", gettime(g_time_start), list->philo_pos);
+	if ((list->stat != 1 && gettime(g_time_start) >= list->tla))
+		printf("%ld : philo %d died!!!\n", gettime(g_time_start), list->philo_pos);
+	if (list->n_meal == 0)
+		printf("%ld : philo %d eated all the meals !!!\n", gettime(g_time_start), list->philo_pos);
 	return (0);
 }
 
@@ -134,12 +169,25 @@ void	make_list_loop(t_list *list)
 	list->next = save;
 }
 
+void	check_fork_assignation(t_list *list, int n_philo)
+{
+	while (n_philo > 0)
+	{
+		printf("philo %d :\n", list->philo_pos);
+		printf("fork1 adress = %p\n", list->fork1);
+		printf("fork2 adress = %p\n", list->fork2);
+		list = list->next;
+		n_philo--;
+	}
+}
+
 int	launch_philo(t_list	*list, int n_philo)
 {
 	t_list	*save;
 
 	save = list;
 	make_list_loop(list);
+	// check_fork_assignation(list, n_philo);
 	while (n_philo > 0)
 	{
 		list->stat = 3;
@@ -170,70 +218,131 @@ void	affect_fork(int n_philo, t_list *list)
 	lock_index = 0;
 	while (list != NULL)
 	{
-		if (lock_index == 0)
-		{
-			list->fork1 = &lock[lock_index];
-			list->fork2 = &lock[n_philo - 1];
-
-			list->checker = lock_index;
-			// printf("checker var = %d\n", list->checker);
-			
-			list = list->next;
-			lock_index++;
-		}
-		else
-		{
-			list->fork1 = &lock[lock_index];
-			list->fork2 = &lock[lock_index - 1];
-
-			list->checker = lock_index;
-			// printf("checker var = %d\n", list->checker);
-			
-			list = list->next;
-			lock_index++;
-		}
+		list->fork1 = lock + ((n_philo - 2 + list->philo_pos) % n_philo);
+		list->fork2 = lock + list->philo_pos - 1;
+		list = list->next;
 	}
 }
 
+int		ft_isdigit(int c)
+{
+	if (c >= 48 && c <= 57)
+		return (1);
+	return (0);
+}
 
-int main()
+int		check_only_digit(char **av, int ac)
+{
+	int i;
+	int	j;
+
+	i = 1;
+	while (i <= 4)
+	{
+		j = 0;
+		while (av[i][j])
+		{
+			if (ft_isdigit((int)av[i][j]) == 0)
+				return (FAILURE);
+			j++;
+		}
+		i++;
+	}
+	j = 0;
+	if (ac == 6)
+		while (av[5][j])
+		{
+			if (ft_isdigit((int)av[i][j]) == 0)
+				return (FAILURE);
+			j++;
+		}
+	return (0);
+}
+
+int		check_good_value(t_param *param, int ac)
+{
+	if (param->n_philo < 1 || param->ttd < 1
+	|| param->tte < 1 || param->tts < 1)
+		return (FAILURE);
+	if (ac == 6 && param->n_meal < 1)
+		return (FAILURE);
+	return (0);
+}
+
+t_param	*parsing(int ac, char **av)
+{
+	t_param	*param;
+
+	if (ac < 5 || ac > 6)
+	{
+		printf("error : incorrect number of arguments\n");
+		return (NULL);
+	}
+	if (check_only_digit(av, ac) == FAILURE)
+	{
+		printf("error : only digits authorized\n");
+		return (NULL);
+	}
+	param = malloc(sizeof(param));
+	param->n_philo = ft_atoi(av[1]);
+	param->ttd = ft_atoi(av[2]);
+	param->tte = ft_atoi(av[3]);
+	param->tts = ft_atoi(av[4]);
+	if (ac == 6)
+		param->n_meal = ft_atoi(av[5]);
+	else
+		param->n_meal = -1;
+	// check_param(param);
+	if (check_good_value(param, ac) == FAILURE)
+	{
+		printf("error : bad value(s)\n");
+		free (param);
+		return (NULL);
+	}
+	return (param);
+}
+
+int main(int ac, char **av)
 {
 	struct timeval	start;
-	int				n_philo = N_PHILO;
 	t_list			*list;
 	t_list			*head_list;
 	int				i = 1;
+	t_param			*param;
 
 	list = NULL;
+
+	param = parsing(ac, av);
+	if (param == NULL)
+		return (0);
+
+	check_param(param);
 
 	pthread_mutex_init(&lock, NULL);
 
 	gettimeofday(&g_time_start, NULL);
 
-	// list = init_list(list);
-	// init_philo
-	while (i <= n_philo)
+	while (i <= param->n_philo)
 	{
 		if (list == NULL)
 		{
-			list = lstnew(i);
+			list = lstnew(i, param);
 			head_list = list;
 		}
 		else
 		{
-			list->next = lstnew(i);
+			list->next = lstnew(i, param);
 			list = list->next;
 		}
 		i++;
 	}
-	// fin init_philo
 
-	affect_fork(n_philo, head_list);
+	affect_fork(param->n_philo, head_list);
 
-	// check_list(head_list);
+	check_list(head_list);
 
-	launch_philo(head_list, n_philo);
+	launch_philo(head_list, param->n_philo);
 
-	free_list(head_list, n_philo);
-
+	free_list(head_list, param->n_philo);
+	free(param);
 }
