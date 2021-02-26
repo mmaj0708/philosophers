@@ -6,7 +6,7 @@
 /*   By: mmaj <mmaj@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 13:50:44 by mmaj              #+#    #+#             */
-/*   Updated: 2021/02/25 13:21:49 by mmaj             ###   ########.fr       */
+/*   Updated: 2021/02/26 15:16:10 by mmaj             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,35 @@ void	check_param(t_param *param)
 	printf("param->tte = %d\n", param->tte);
 	printf("param->tts = %d\n", param->tts);
 	printf("param->meal = %d\n", param->n_meal);
+}
+
+void	check_list_elmt(t_list *list, int n_philo)
+{
+	while (n_philo > 0)
+	{
+	
+	printf("check list\n");
+	printf("list->philo_pos = %d\n", list->philo_pos);
+	printf("list->n_philo = %d\n", list->n_philo);
+	printf("list->ttd = %d\n", list->ttd);
+	printf("list->tte = %d\n", list->tte);
+	printf("list->tts = %d\n", list->tts);
+	printf("list->meal = %d\n", list->n_meal);
+		n_philo--;
+		list = list->next;
+	}
+}
+
+void	check_fork_assignation(t_list *list, int n_philo)
+{
+	while (n_philo > 0)
+	{
+		printf("philo %d :\n", list->philo_pos);
+		printf("fork1 adress = %p\n", list->fork1);
+		printf("fork2 adress = %p\n", list->fork2);
+		list = list->next;
+		n_philo--;
+	}
 }
 
 int	ft_atoi(char *str)
@@ -93,7 +122,7 @@ long int	gettime(struct timeval start)
 	return (time);
 }
 
-t_list	*lstnew(int i, t_param *param)
+t_list	*lstnew(int i, t_param *param, int n_meal)
 {
 	t_list	*new;
 
@@ -101,7 +130,7 @@ t_list	*lstnew(int i, t_param *param)
 	new->ttd = param->ttd;
 	new->tte = param->tte;
 	new->tts = param->tts;
-	new->n_meal = param->n_meal;
+	new->n_meal = n_meal;
 	new->philo_pos = i;
 	new->next = NULL;
 
@@ -144,21 +173,35 @@ void	*philo_life(void *lst)
 	return (0);
 }
 
-int	death_checker(t_list *list)
+int	death_checker(t_list *list, int n_philo)
 {
+	t_list *save;
+	int i;
+
+	save = list;
+	i = 0;
 	while (1)
 	{
-		if ((list->stat != 1 && gettime(g_time_start) >= list->tla))
+		if ((list->stat != 1 && gettime(g_time_start) >= list->tla) || list->n_meal == 0)
 		{
-			printf("list->philo_pos = %d, list->stat = %d, gettime = %ld, list->tla = %d\n", list->philo_pos, list->stat, gettime(g_time_start), list->tla);
+			// printf("list->philo_pos = %d, list->stat = %d, gettime = %ld, list->tla = %d\n", list->philo_pos, list->stat, gettime(g_time_start), list->tla);
+			while (i < n_philo)
+			{
+				printf("CHECK DESTROY!!!!!!!!!!!\n");
+				pthread_mutex_destroy(list->fork1);
+				pthread_mutex_destroy(list->fork2);
+				list = list->next;
+				i++;
+			}
+			
 			break;
 		}
 		list = list->next;
 	}
 	if ((list->stat != 1 && gettime(g_time_start) >= list->tla))
 		printf("%ld : philo %d died!!!\n", gettime(g_time_start), list->philo_pos);
-	// if (list->n_meal == 0)
-	// 	printf("%ld : philo %d eated all the meals !!!\n", gettime(g_time_start), list->philo_pos);
+	if (list->n_meal == 0)
+		printf("%ld : philo %d ate all the meals !!!\n", gettime(g_time_start), list->philo_pos);
 	return (0);
 }
 
@@ -172,36 +215,26 @@ void	make_list_loop(t_list *list)
 	list->next = save;
 }
 
-void	check_fork_assignation(t_list *list, int n_philo)
-{
-	while (n_philo > 0)
-	{
-		printf("philo %d :\n", list->philo_pos);
-		printf("fork1 adress = %p\n", list->fork1);
-		printf("fork2 adress = %p\n", list->fork2);
-		list = list->next;
-		n_philo--;
-	}
-}
-
 int	launch_philo(t_list	*list, int n_philo)
 {
 	t_list	*save;
+	int		i;
 
 	save = list;
+	i = 0;
 	make_list_loop(list);
 	// check_fork_assignation(list, n_philo);
-	while (n_philo > 0)
+	while (i < n_philo)
 	{
 		list->stat = 3;
 		list->tla = gettime(g_time_start) + list->ttd;
 		pthread_create(&list->th, NULL, philo_life, (void *)list);
 		// printf("check nb thread\n");
 		list = list->next;
-		n_philo--;
+		i++;
 	}
 	// pthread_join(save->th, NULL);
-	death_checker(save);
+	death_checker(save, n_philo);
 	return (0);
 }
 
@@ -313,6 +346,7 @@ int main(int ac, char **av)
 	t_list			*head_list;
 	int				i = 1;
 	t_param			*param;
+	int				n_meal;
 
 	list = NULL;
 
@@ -320,33 +354,42 @@ int main(int ac, char **av)
 	if (param == NULL)
 		return (0);
 
-	check_param(param);
+	// check_param(param);
 
 	pthread_mutex_init(&lock, NULL);
 
 	gettimeofday(&g_time_start, NULL);
 
+	n_meal = param->n_meal;
+	// printf("check param->meal = %d\n", param->n_meal);
 	while (i <= param->n_philo)
 	{
 		if (list == NULL)
 		{
-			list = lstnew(i, param);
+			list = lstnew(i, param, n_meal);
 			head_list = list;
 		}
 		else
 		{
-			list->next = lstnew(i, param);
+			list->next = lstnew(i, param, n_meal);
 			list = list->next;
 		}
 		i++;
+
 	}
 
 	affect_fork(param->n_philo, head_list);
 
-	check_list(head_list);
+	// check_list(head_list);
+
+	// check_list_elmt(head_list, param->n_philo);
 
 	launch_philo(head_list, param->n_philo);
 
 	free_list(head_list, param->n_philo);
 	free(param);
 }
+
+// placer une var alive dans t_list verifiée TRUE chaque fois au debut de nouvelle action
+// le death_checker set alive à false qd ya un mort
+// evite tout ecriture en trop !
