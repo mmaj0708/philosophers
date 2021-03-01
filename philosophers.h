@@ -6,7 +6,7 @@
 /*   By: mmaj <mmaj@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/23 11:50:54 by mmaj              #+#    #+#             */
-/*   Updated: 2021/02/25 12:27:46 by mmaj             ###   ########.fr       */
+/*   Updated: 2021/03/01 11:16:31 by mmaj             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ typedef	struct	s_list
 	int	tla;
 	int	n_philo;
 	int	n_meal;
+	int alive;
 	pthread_t		th;
 }				t_list;
 
@@ -62,10 +63,14 @@ typedef	struct	s_param
 #define TTS 400
 #define N_PHILO 12
 #define FAILURE -1
+#define FALSE 0
+#define TRUE 1
 
 pthread_mutex_t lock;
 
 struct timeval g_time_start;
+int				g_philo_ate;
+int				g_eatordeath;
 
 struct s_time_option
 {
@@ -73,5 +78,9 @@ struct s_time_option
 	int tte;
 	int tts;
 } typedef t_time_option;
+
+void	*philo_life(void *lst);
+long int	gettime(struct timeval start);
+int	death_checker(t_list *list, int n_philo);
 
 #endif

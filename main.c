@@ -6,7 +6,7 @@
 /*   By: mmaj <mmaj@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 13:50:44 by mmaj              #+#    #+#             */
-/*   Updated: 2021/02/26 15:16:10 by mmaj             ###   ########.fr       */
+/*   Updated: 2021/03/01 14:06:34 by mmaj             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ void	check_list_elmt(t_list *list, int n_philo)
 	printf("list->tte = %d\n", list->tte);
 	printf("list->tts = %d\n", list->tts);
 	printf("list->meal = %d\n", list->n_meal);
+	printf("list->alive = %d\n", list->alive);
 		n_philo--;
 		list = list->next;
 	}
@@ -132,77 +133,10 @@ t_list	*lstnew(int i, t_param *param, int n_meal)
 	new->tts = param->tts;
 	new->n_meal = n_meal;
 	new->philo_pos = i;
+	new->alive = TRUE;
 	new->next = NULL;
 
 	return (new);
-}
-
-void	*philo_life(void *lst)
-{
-	t_list *list;
-	long int next_tte;
-
-	list = lst;
-	while (1)
-	{
-		pthread_mutex_lock(list->fork1);
-		pthread_mutex_lock(list->fork2);
-		printf("%ld : philo %d has taken fork one\n", gettime(g_time_start), list->philo_pos);
-		printf("%ld : philo %d has taken fork two\n", gettime(g_time_start), list->philo_pos);
-		list->stat = 1;
-		printf("%ld : philo %d is eating\n", gettime(g_time_start), list->philo_pos);
-		usleep(list->tte * 1000);
-		if (list->n_meal != -1)
-		{
-			list->n_meal--;
-			printf("meal left for philo %d = %d\n", list->philo_pos, list->n_meal);
-		}
-		// if (list->n_meal == 0)
-		// {
-		// 	printf("%ld : philo %d has taken fork two\n", gettime(g_time_start), list->philo_pos);
-		// 	break;
-		// }
-		list->stat = 2;
-		list->tla = gettime(g_time_start) + list->ttd;
-		pthread_mutex_unlock(list->fork1);
-		pthread_mutex_unlock(list->fork2);
-		printf("%ld : philo %d is sleeping\n", gettime(g_time_start), list->philo_pos);
-		usleep(list->tts * 1000);
-		printf("%ld : philo %d is thinking\n", gettime(g_time_start), list->philo_pos);
-	}
-	return (0);
-}
-
-int	death_checker(t_list *list, int n_philo)
-{
-	t_list *save;
-	int i;
-
-	save = list;
-	i = 0;
-	while (1)
-	{
-		if ((list->stat != 1 && gettime(g_time_start) >= list->tla) || list->n_meal == 0)
-		{
-			// printf("list->philo_pos = %d, list->stat = %d, gettime = %ld, list->tla = %d\n", list->philo_pos, list->stat, gettime(g_time_start), list->tla);
-			while (i < n_philo)
-			{
-				printf("CHECK DESTROY!!!!!!!!!!!\n");
-				pthread_mutex_destroy(list->fork1);
-				pthread_mutex_destroy(list->fork2);
-				list = list->next;
-				i++;
-			}
-			
-			break;
-		}
-		list = list->next;
-	}
-	if ((list->stat != 1 && gettime(g_time_start) >= list->tla))
-		printf("%ld : philo %d died!!!\n", gettime(g_time_start), list->philo_pos);
-	if (list->n_meal == 0)
-		printf("%ld : philo %d ate all the meals !!!\n", gettime(g_time_start), list->philo_pos);
-	return (0);
 }
 
 void	make_list_loop(t_list *list)
@@ -223,6 +157,7 @@ int	launch_philo(t_list	*list, int n_philo)
 	save = list;
 	i = 0;
 	make_list_loop(list);
+	// check_list_elmt(list, n_philo);
 	// check_fork_assignation(list, n_philo);
 	while (i < n_philo)
 	{
@@ -339,6 +274,23 @@ t_param	*parsing(int ac, char **av)
 	return (param);
 }
 
+int	destroy_all(t_list *list, int n_philo)
+{
+	int i;
+
+	i = 0;
+	while (i < n_philo)
+	{
+		pthread_detach(list->th);
+		pthread_mutex_destroy(list->fork1);
+		list = list->next;
+		i++;
+	}
+	list = list->next;
+	free(list->fork1);
+	return (0);
+}
+
 int main(int ac, char **av)
 {
 	struct timeval	start;
@@ -350,6 +302,7 @@ int main(int ac, char **av)
 
 	list = NULL;
 
+	g_philo_ate = 0;
 	param = parsing(ac, av);
 	if (param == NULL)
 		return (0);
@@ -386,6 +339,8 @@ int main(int ac, char **av)
 
 	launch_philo(head_list, param->n_philo);
 
+	destroy_all(head_list, param->n_philo);
+	
 	free_list(head_list, param->n_philo);
 	free(param);
 }
