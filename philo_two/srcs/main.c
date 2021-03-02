@@ -6,7 +6,7 @@
 /*   By: mmaj <mmaj@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 13:50:44 by mmaj              #+#    #+#             */
-/*   Updated: 2021/03/02 11:19:07 by mmaj             ###   ########.fr       */
+/*   Updated: 2021/03/02 11:57:26 by mmaj             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ int			main(int ac, char **av)
 	if(!(list = create_philo(param, list, param->n_philo, n_meal)))
 		return (0);
 	head_list = list;
-	affect_fork(param->n_philo, head_list);
+	init_fork(param->n_philo, head_list);
 	launch_philo(head_list, param->n_philo);
 	destroy_all(head_list, param->n_philo);
 	free_list(head_list, param->n_philo);

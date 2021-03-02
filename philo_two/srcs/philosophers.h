@@ -6,7 +6,7 @@
 /*   By: mmaj <mmaj@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/23 11:50:54 by mmaj              #+#    #+#             */
-/*   Updated: 2021/03/02 11:43:39 by mmaj             ###   ########.fr       */
+/*   Updated: 2021/03/02 11:57:39 by mmaj             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ int				g_philo_ate;
 int				g_eatordeath;
 
 void			*philo_life(void *lst);
-void			affect_fork(int n_philo, t_list *list);
+void			init_fork(int n_philo, t_list *list);
 long int		gettime(struct timeval start);
 int				death_checker(t_list *list, int n_philo);
 t_param			*parsing(int ac, char **av);

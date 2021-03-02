@@ -6,32 +6,19 @@
 /*   By: mmaj <mmaj@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 10:06:01 by mmaj              #+#    #+#             */
-/*   Updated: 2021/03/02 11:18:13 by mmaj             ###   ########.fr       */
+/*   Updated: 2021/03/02 12:16:22 by mmaj             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-void		affect_fork(int n_philo, t_list *list)
+void		init_fork(int n_philo, t_list *list)
 {
-	int				lock_index;
-	pthread_mutex_t *lock;
+	sem_t			*sem;
 
-	lock_index = 0;
-	lock = malloc(sizeof(pthread_mutex_t) * n_philo);
-	while (lock_index < n_philo)
-	{
-		pthread_mutex_init(&lock[lock_index], NULL);
-		lock_index++;
-	}
-	lock_index = 0;
-	while (list != NULL)
-	{
-		list->fork1 = lock + ((n_philo - 2 + list->philo_pos) % n_philo);
-		list->fork2 = lock + list->philo_pos - 1;
-		list->checker = list->philo_pos;
-		list = list->next;
-	}
+	sem = malloc(sizeof(pthread_mutex_t) * n_philo);
+	pthread_mutex_init(&sem[sem_index], NULL);
+// semaphre partagé
 }
 
 t_list		*lstnew(int i, t_param *param, int n_meal)
