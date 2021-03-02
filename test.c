@@ -6,7 +6,7 @@
 /*   By: mmaj <mmaj@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/01 13:32:19 by mmaj              #+#    #+#             */
-/*   Updated: 2021/03/01 14:03:19 by mmaj             ###   ########.fr       */
+/*   Updated: 2021/03/02 09:17:47 by mmaj             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <stdlib.h>
-
 
 void	*check(void *arg)
 {
