@@ -6,7 +6,7 @@
 /*   By: mmaj <mmaj@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/01 13:32:19 by mmaj              #+#    #+#             */
-/*   Updated: 2021/03/02 09:17:47 by mmaj             ###   ########.fr       */
+/*   Updated: 2021/03/05 14:45:46 by mmaj             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,26 +18,36 @@
 
 void	*check(void *arg)
 {
-	usleep(3000000);
-	return (NULL);
+	printf("IN check\n");
+
+	exit(15);
 }
 
 int main()
 {
-	int *i = malloc(45);
-	i = malloc(45);
-	pthread_mutex_t lock;
+	int stat;
+	int ret;
+	pid_t	pid;
 	pthread_t		th;
+	pthread_mutex_t lock;
 
-	pthread_mutex_init(&lock, NULL);
+	if ((pid = fork()) == 0)
+	{	
+	// 	pthread_create(&th, NULL, check, NULL);
+	// pthread_join(th, NULL);
+		check(NULL);
+	}
+
+	waitpid(pid, &stat, 0);
+	ret = WEXITSTATUS(stat);
+	printf("stat = %d\n", ret);
+	// pthread_mutex_init(&lock, NULL);
 
 	// check(NULL);
 
-	// printf("check\n");
-	// pthread_create(&th, NULL, check, NULL);
-	getchar();
+	printf("in main\n");
+	// getchar();
 
-	// pthread_join(th, NULL);
 
 	// pthread_detach(th);
 	return (0);
