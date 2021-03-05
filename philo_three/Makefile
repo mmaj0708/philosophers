@@ -6,11 +6,11 @@
 #    By: mmaj <mmaj@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/03/02 09:09:37 by mmaj              #+#    #+#              #
-#    Updated: 2021/03/05 10:13:42 by mmaj             ###   ########.fr        #
+#    Updated: 2021/03/05 13:24:20 by mmaj             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = philo_two
+NAME = philo_three
 
 SRCS = srcs/checker.c srcs/main.c srcs/parsing.c \
 	srcs/init_philo.c srcs/utils.c srcs/philo_life.c srcs/philo_action.c

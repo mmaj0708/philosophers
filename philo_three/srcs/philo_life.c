@@ -6,7 +6,7 @@
 /*   By: mmaj <mmaj@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/01 09:49:37 by mmaj              #+#    #+#             */
-/*   Updated: 2021/03/02 10:48:54 by mmaj             ###   ########.fr       */
+/*   Updated: 2021/03/05 14:55:23 by mmaj             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void		*philo_life(void *lst)
 		get_fork(list);
 		if (get_eat(list) == FALSE)
 		{
-			g_philo_ate++;
+			usleep(20);
 			return (0);
 		}
 		get_sleep(list);
@@ -32,32 +32,36 @@ void		*philo_life(void *lst)
 	return (0);
 }
 
-int			death_checker(t_list *list, int n_philo)
+void		*death_checker(void *lst)
 {
+	t_list		*list;
 	t_list		*save;
-	t_list		*last_philo;
 	int			i;
 
+	list = (t_list *)lst;
 	save = list;
 	i = 0;
 	while (1)
 	{
-		if ((gettime(g_time_start) >= list->tla) || g_philo_ate == n_philo)
+		if ((gettime(g_time_start) >= list->tla) || list->n_meal == 0)
 		{
-			last_philo = list;
-			if (g_philo_ate == n_philo)
+			if (list->n_meal == 0)
 				g_eatordeath = 1;
 			else
 				g_eatordeath = 0;
 			break ;
 		}
-		list = list->next;
 	}
 	if (g_eatordeath == 0)
-		printf("%ld : %d died\n", gettime(g_time_start), last_philo->philo_pos);
+	{
+		sem_wait(list->sem_print);
+		printf("%ld : %d died\n", gettime(g_time_start), list->philo_pos);
+		// free ??
+		exit(0);
+	}
 	if (g_eatordeath == 1)
-		printf("%ld : philos ate their meals!!!\n", gettime(g_time_start));
-	return (0);
+		exit(1); // free ??
+	return (NULL);
 }
 
 int			launch_philo(t_list *list, int n_philo)
@@ -70,12 +74,15 @@ int			launch_philo(t_list *list, int n_philo)
 	make_list_loop(list);
 	while (i < n_philo)
 	{
-		list->stat = 3;
-		list->tla = gettime(g_time_start) + list->ttd;
-		pthread_create(&list->th, NULL, philo_life, (void *)list);
+		if ((list->pid = fork()) == 0)
+		{
+			list->stat = 3;
+			list->tla = gettime(g_time_start) + list->ttd;
+			pthread_create(&list->th, NULL, death_checker, (void *)save);
+			philo_life(list);
+		}
 		list = list->next;
 		i++;
 	}
-	death_checker(save, n_philo);
 	return (0);
 }

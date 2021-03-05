@@ -6,7 +6,7 @@
 /*   By: mmaj <mmaj@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/23 11:50:54 by mmaj              #+#    #+#             */
-/*   Updated: 2021/03/05 10:38:26 by mmaj             ###   ########.fr       */
+/*   Updated: 2021/03/05 15:00:23 by mmaj             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,14 @@
 # include <pthread.h>
 # include <stdlib.h>
 # include <semaphore.h>
+#include <sys/types.h>
+#include <signal.h>
 
 # define TTD 810
 # define TTE 200
 # define TTS 400
-# define N_PHILO 12
+# define DEATH 0
+# define ATE 1
 # define FAILURE -1
 # define FALSE 0
 # define TRUE 1
@@ -42,8 +45,9 @@ typedef	struct	s_list
 	int				is_ded;
 	int				stat;
 	int				checker;
-
+	pid_t			pid;
 	sem_t			*sem;
+	sem_t			*sem_print;
 	int				ttd;
 	int				tte;
 	int				tts;
@@ -70,7 +74,7 @@ int				g_eatordeath;
 void			*philo_life(void *lst);
 int				init_fork(int n_philo, t_list *list);
 long int		gettime(struct timeval start);
-int				death_checker(t_list *list, int n_philo);
+void			*death_checker(void *lst);
 t_param			*parsing(int ac, char **av);
 int				launch_philo(t_list	*list, int n_philo);
 t_list			*create_philo(t_param *p, t_list *l, int n_philo, int n_meal);

@@ -6,7 +6,7 @@
 /*   By: mmaj <mmaj@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 13:50:44 by mmaj              #+#    #+#             */
-/*   Updated: 2021/03/05 10:37:29 by mmaj             ###   ########.fr       */
+/*   Updated: 2021/03/05 15:03:37 by mmaj             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,39 @@ int			destroy_all(t_list *list, int n_philo)
 	return (0);
 }
 
+int			kill_philos(int n_philo, t_list *list)
+{
+	int i;
+
+	i = 0;
+	while (i < n_philo)
+	{
+		kill(list->pid, 0);
+		list = list->next;
+		i++;
+	}
+	return (0);
+}
+
+int			wait_philos(int n_philo, t_list *list)
+{
+	int			stat;
+	int			ret;
+
+	while (g_philo_ate < n_philo)
+	{
+		waitpid(0, &stat, 0);
+		ret = WIFEXITED(stat);
+		if (ret == DEATH)
+			kill_philos(n_philo, list);
+		else if (ret == ATE)
+			g_philo_ate++;
+	}
+	if (g_philo_ate == n_philo)
+		printf("all philos got their meals");
+	return (0);
+}
+
 int			main(int ac, char **av)
 {
 	t_list			*list;
@@ -89,8 +122,10 @@ int			main(int ac, char **av)
 	head_list = list;
 	if (init_fork(param->n_philo, head_list) == FAILURE)
 		return (0);
+	check_list_elmt(head_list, param->n_philo);
 	launch_philo(head_list, param->n_philo);
-	destroy_all(head_list, param->n_philo);
-	free_list(head_list, param->n_philo);
-	free(param);
+	wait_philos(param->n_philo, head_list);
+	// destroy_all(head_list, param->n_philo);
+	// free_list(head_list, param->n_philo);
+	// free(param);
 }
