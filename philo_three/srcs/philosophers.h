@@ -19,14 +19,15 @@
 # include <pthread.h>
 # include <stdlib.h>
 # include <semaphore.h>
-#include <sys/types.h>
-#include <signal.h>
+# include <sys/types.h>
+# include <signal.h>
+# include <sys/wait.h>
 
 # define TTD 810
 # define TTE 200
 # define TTS 400
-# define DEATH 0
-# define ATE 1
+# define DEATH 66
+# define ATE 70
 # define FAILURE -1
 # define FALSE 0
 # define TRUE 1

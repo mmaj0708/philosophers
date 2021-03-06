@@ -37,30 +37,37 @@ void		*death_checker(void *lst)
 	t_list		*list;
 	t_list		*save;
 	int			i;
+	int			eatordeath;
 
 	list = (t_list *)lst;
 	save = list;
 	i = 0;
+		// printf("check list->tla = %d\n", list->tla);
 	while (1)
 	{
-		if ((gettime(g_time_start) >= list->tla) || list->n_meal == 0)
+		if ((gettime(g_time_start) > list->tla) || list->n_meal == 0)
 		{
 			if (list->n_meal == 0)
-				g_eatordeath = 1;
+				g_eatordeath = ATE;
 			else
-				g_eatordeath = 0;
+				g_eatordeath = DEATH;
 			break ;
 		}
 	}
-	if (g_eatordeath == 0)
+	if (g_eatordeath == DEATH)
 	{
+		// printf("check get_time = %ld\n", gettime(g_time_start));
+		printf("check death\n");
 		sem_wait(list->sem_print);
 		printf("%ld : %d died\n", gettime(g_time_start), list->philo_pos);
 		// free ??
-		exit(0);
+		exit(DEATH);
 	}
-	if (g_eatordeath == 1)
-		exit(1); // free ??
+	if (g_eatordeath == ATE)
+	{
+		printf("check death\n");
+		exit(ATE); // free ??
+	}
 	return (NULL);
 }
 
@@ -78,7 +85,7 @@ int			launch_philo(t_list *list, int n_philo)
 		{
 			list->stat = 3;
 			list->tla = gettime(g_time_start) + list->ttd;
-			pthread_create(&list->th, NULL, death_checker, (void *)save);
+			pthread_create(&list->th, NULL, death_checker, (void *)list);
 			philo_life(list);
 		}
 		list = list->next;

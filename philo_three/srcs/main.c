@@ -92,15 +92,19 @@ int			wait_philos(int n_philo, t_list *list)
 
 	while (g_philo_ate < n_philo)
 	{
-		waitpid(0, &stat, 0);
-		ret = WIFEXITED(stat);
+		wait(&stat);
+		ret = WEXITSTATUS(stat);
+		printf("check ret = %d\n", ret);
 		if (ret == DEATH)
 			kill_philos(n_philo, list);
 		else if (ret == ATE)
 			g_philo_ate++;
+		if (g_philo_ate == n_philo)
+		{
+			printf("all philos got their meals");
+			return (0);
+		}
 	}
-	if (g_philo_ate == n_philo)
-		printf("all philos got their meals");
 	return (0);
 }
 

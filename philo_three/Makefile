@@ -23,7 +23,7 @@ all : $(NAME)
 
 $(NAME) : $(OBJECTS)
 
-	gcc -lpthread -Wall -Wextra -Werror -o ${NAME} $(OBJECTS)
+	gcc -pthread -Wall -Wextra -Werror -o ${NAME} $(OBJECTS)
 
 clean : 
 	@/bin/rm -f $(OBJECTS)

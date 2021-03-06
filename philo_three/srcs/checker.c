@@ -34,7 +34,7 @@ void		check_list_elmt(t_list *list, int n_philo)
 		printf("list->tts = %d\n", list->tts);
 		printf("list->meal = %d\n", list->n_meal);
 		printf("list->alive = %d\n", list->alive);
-		printf("list->sem = %d\n", list->sem);
+		printf("list->sem = %p\n", list->sem);
 		n_philo--;
 		list = list->next;
 	}
