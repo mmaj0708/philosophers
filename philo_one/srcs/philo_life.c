@@ -6,7 +6,7 @@
 /*   By: mmaj <mmaj@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/01 09:49:37 by mmaj              #+#    #+#             */
-/*   Updated: 2021/03/02 11:30:27 by mmaj             ###   ########.fr       */
+/*   Updated: 2021/03/26 16:18:38 by mmaj             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,15 +65,29 @@ int			launch_philo(t_list *list, int n_philo)
 	int		i;
 
 	save = list;
-	i = 0;
+	i = -1;
 	make_list_loop(list);
-	while (i < n_philo)
+	while (++i < n_philo && (list->philo_pos % 2))
 	{
-		list->stat = 3;
+		// printf("philo pos = %d\n", list->philo_pos);
 		list->tla = gettime(g_time_start) + list->ttd;
 		pthread_create(&list->th, NULL, philo_life, (void *)list);
 		list = list->next;
-		i++;
+		list = list->next;
+		i = i + 2;
+	}
+	i = -1;
+	list = save;
+	list = list->next;
+	usleep(1000);
+	while (++i < n_philo && !(list->philo_pos % 2))
+	{
+		// printf("philo pos = %d\n", list->philo_pos);
+		list->tla = gettime(g_time_start) + list->ttd;
+		pthread_create(&list->th, NULL, philo_life, (void *)list);
+		list = list->next;
+		list = list->next;
+		i = i + 2;
 	}
 	death_checker(save, n_philo);
 	return (0);

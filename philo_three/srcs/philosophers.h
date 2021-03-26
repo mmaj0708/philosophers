@@ -6,7 +6,7 @@
 /*   By: mmaj <mmaj@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/23 11:50:54 by mmaj              #+#    #+#             */
-/*   Updated: 2021/03/05 15:00:23 by mmaj             ###   ########.fr       */
+/*   Updated: 2021/03/26 14:29:40 by mmaj             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # include <sys/types.h>
 # include <signal.h>
 # include <sys/wait.h>
+# include <sys/ipc.h>
 
 # define TTD 810
 # define TTE 200

@@ -6,7 +6,7 @@
 /*   By: mmaj <mmaj@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 13:50:44 by mmaj              #+#    #+#             */
-/*   Updated: 2021/03/05 15:03:37 by mmaj             ###   ########.fr       */
+/*   Updated: 2021/03/26 14:43:23 by mmaj             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,10 +133,10 @@ int			main(int ac, char **av)
 	head_list = list;
 	if (init_fork(param->n_philo, head_list) == FAILURE)
 		return (0);
-	check_list_elmt(head_list, param->n_philo);
+	// check_list_elmt(head_list, param->n_philo);
 	launch_philo(head_list, param->n_philo);
 	wait_philos(param->n_philo, head_list);
-	// destroy_all(head_list, param->n_philo);
-	// free_list(head_list, param->n_philo);
-	// free(param);
+	destroy_all(head_list, param->n_philo);
+	free_list(head_list, param->n_philo);
+	free(param);
 }
