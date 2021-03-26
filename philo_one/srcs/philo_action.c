@@ -28,9 +28,7 @@ int			get_eat(t_list *list)
 	list->tla = gettime(g_time_start) + list->ttd;
 	usleep(list->tte * 1000);
 	if (list->n_meal != -1)
-	{
 		list->n_meal--;
-	}
 	pthread_mutex_unlock(list->fork1);
 	pthread_mutex_unlock(list->fork2);
 	if (list->n_meal == 0)

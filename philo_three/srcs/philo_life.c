@@ -21,15 +21,10 @@ void		*philo_life(void *lst)
 	while (1)
 	{
 		get_fork(list);
-		if (get_eat(list) == FALSE)
-		{
-			usleep(20);
-			return (0);
-		}
+		get_eat(list);
 		get_sleep(list);
 		get_think(list);
 	}
-	return (0);
 }
 
 void		*death_checker(void *lst)
@@ -57,7 +52,7 @@ void		*death_checker(void *lst)
 	if (g_eatordeath == DEATH)
 	{
 		// printf("check get_time = %ld\n", gettime(g_time_start));
-		printf("check death\n");
+		// printf("check death\n");
 		sem_wait(list->sem_print);
 		printf("%ld : %d died\n", gettime(g_time_start), list->philo_pos);
 		// free ??
@@ -65,10 +60,21 @@ void		*death_checker(void *lst)
 	}
 	if (g_eatordeath == ATE)
 	{
-		printf("check death\n");
+		// printf("%d all eaten\n", list->philo_pos);
 		exit(ATE); // free ??
 	}
 	return (NULL);
+}
+
+void		print_pid(t_list *list, int n_philo)
+{
+	while (n_philo > 0)
+	{
+		printf("%d has pid %d\n", list->philo_pos,list->pid);
+		list = list->next;
+		n_philo--;
+	}
+	return ;
 }
 
 int			launch_philo(t_list *list, int n_philo)
@@ -91,5 +97,6 @@ int			launch_philo(t_list *list, int n_philo)
 		list = list->next;
 		i++;
 	}
+	// print_pid(save, n_philo);
 	return (0);
 }

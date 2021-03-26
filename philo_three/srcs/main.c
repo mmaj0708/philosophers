@@ -76,6 +76,8 @@ int			kill_philos(int n_philo, t_list *list)
 	int i;
 
 	i = 0;
+	
+	// print_pid(list, n_philo);
 	while (i < n_philo)
 	{
 		kill(list->pid, 0);
@@ -89,14 +91,19 @@ int			wait_philos(int n_philo, t_list *list)
 {
 	int			stat;
 	int			ret;
+	t_list		*head_list;
 
+	head_list = list;
 	while (g_philo_ate < n_philo)
 	{
 		wait(&stat);
 		ret = WEXITSTATUS(stat);
-		printf("check ret = %d\n", ret);
+		// printf("check ret = %d\n", ret);
 		if (ret == DEATH)
-			kill_philos(n_philo, list);
+		{
+			kill_philos(n_philo, head_list);
+			return (0);
+		}
 		else if (ret == ATE)
 			g_philo_ate++;
 		if (g_philo_ate == n_philo)

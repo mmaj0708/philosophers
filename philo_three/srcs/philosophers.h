@@ -93,5 +93,6 @@ void			check_list_elmt(t_list *list, int n_philo);
 void			check_param(t_param *param);
 void			check_fork_assignation(t_list *list, int n_philo);
 void			check_list(t_list *list);
+void			print_pid(t_list *save, int n_philo);
 
 #endif

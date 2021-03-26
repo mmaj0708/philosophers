@@ -14,6 +14,8 @@
 
 int			get_fork(t_list *list)
 {
+	if (list->n_meal == 0)
+		return (0);
 	sem_wait(list->sem);
 	sem_wait(list->sem);
 	sem_wait(list->sem_print);
@@ -25,6 +27,8 @@ int			get_fork(t_list *list)
 
 int			get_eat(t_list *list)
 {
+	if (list->n_meal == 0)
+		return (0);
 	list->stat = 1;
 	sem_wait(list->sem_print);
 	printf("%ld : %d is eating\n", gettime(g_time_start), list->philo_pos);
@@ -44,6 +48,8 @@ int			get_eat(t_list *list)
 
 int			get_sleep(t_list *list)
 {
+	if (list->n_meal == 0)
+		return (0);
 	list->stat = 2;
 	sem_wait(list->sem_print);
 	printf("%ld : %d is sleeping\n", gettime(g_time_start), list->philo_pos);
@@ -54,6 +60,8 @@ int			get_sleep(t_list *list)
 
 int			get_think(t_list *list)
 {
+	if (list->n_meal == 0)
+		return (0);
 	sem_wait(list->sem_print);
 	printf("%ld : %d is thinking\n", gettime(g_time_start), list->philo_pos);
 	sem_post(list->sem_print);

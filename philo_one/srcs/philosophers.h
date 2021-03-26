@@ -44,6 +44,7 @@ typedef	struct	s_list
 
 	pthread_mutex_t	*fork1;
 	pthread_mutex_t	*fork2;
+	pthread_mutex_t	*mut_print;
 	int				ttd;
 	int				tte;
 	int				tts;
