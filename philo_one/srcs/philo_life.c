@@ -6,7 +6,7 @@
 /*   By: mmaj <mmaj@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/01 09:49:37 by mmaj              #+#    #+#             */
-/*   Updated: 2021/03/26 16:18:38 by mmaj             ###   ########.fr       */
+/*   Updated: 2021/03/29 12:22:34 by mmaj             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int			death_checker(t_list *list, int n_philo)
 		list = list->next;
 	}
 	if (g_eatordeath == 0)
-		printf("%ld : %d died\n", gettime(g_time_start), last_philo->philo_pos);
+		printf("%ld : %d DIED\n", gettime(g_time_start), last_philo->philo_pos);
 	if (g_eatordeath == 1)
 		printf("%ld : philos ate their meals!!!\n", gettime(g_time_start));
 	return (0);
@@ -65,26 +65,37 @@ int			launch_philo(t_list *list, int n_philo)
 	int		i;
 
 	save = list;
-	i = -1;
+	i = 0;
 	make_list_loop(list);
-	while (++i < n_philo && (list->philo_pos % 2))
+
+	// while (++i < n_philo)
+	// {
+	// 	list->tla = gettime(g_time_start) + list->ttd;
+	// 	pthread_create(&list->th, NULL, philo_life, (void *)list);
+	// 	printf("philo pos = %d\n", list->philo_pos);
+	// 	printf("i = %d\n", i);
+	// 	list = list->next;
+	// }
+
+	while (i < n_philo && (list->philo_pos % 2))
 	{
-		// printf("philo pos = %d\n", list->philo_pos);
 		list->tla = gettime(g_time_start) + list->ttd;
 		pthread_create(&list->th, NULL, philo_life, (void *)list);
+		// printf("philo pos = %d\n", list->philo_pos);
+		// printf("i = %d\n", i);
 		list = list->next;
 		list = list->next;
 		i = i + 2;
 	}
-	i = -1;
+	i = 0;
 	list = save;
 	list = list->next;
 	usleep(1000);
-	while (++i < n_philo && !(list->philo_pos % 2))
+	while (i < n_philo && !(list->philo_pos % 2))
 	{
-		// printf("philo pos = %d\n", list->philo_pos);
 		list->tla = gettime(g_time_start) + list->ttd;
 		pthread_create(&list->th, NULL, philo_life, (void *)list);
+		// printf("philo pos = %d\n", list->philo_pos);
 		list = list->next;
 		list = list->next;
 		i = i + 2;

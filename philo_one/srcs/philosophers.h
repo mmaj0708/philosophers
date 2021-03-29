@@ -6,7 +6,7 @@
 /*   By: mmaj <mmaj@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/23 11:50:54 by mmaj              #+#    #+#             */
-/*   Updated: 2021/03/02 11:28:15 by mmaj             ###   ########.fr       */
+/*   Updated: 2021/03/29 11:43:38 by mmaj             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ t_param			*parsing(int ac, char **av);
 int				launch_philo(t_list	*list, int n_philo);
 t_list			*create_philo(t_param *p, t_list *l, int n_philo, int n_meal);
 void			make_list_loop(t_list *list);
+void			ft_wait(int time_to_wait);
 
 int				ft_isdigit(int c);
 int				ft_atoi(char *str);

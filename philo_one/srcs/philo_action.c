@@ -6,7 +6,7 @@
 /*   By: mmaj <mmaj@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 10:48:18 by mmaj              #+#    #+#             */
-/*   Updated: 2021/03/26 14:55:56 by mmaj             ###   ########.fr       */
+/*   Updated: 2021/03/29 12:23:30 by mmaj             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,9 @@ int			get_eat(t_list *list)
 	list->stat = 1;
 	printf("%ld : %d is eating\n", gettime(g_time_start), list->philo_pos);
 	list->tla = gettime(g_time_start) + list->ttd;
-	usleep(list->tte * 1000);
+	// printf("CHECK WAIT\n");
+	ft_wait(list->tte);
+	// usleep(list->tte * 1000);
 	if (list->n_meal != -1)
 		list->n_meal--;
 	pthread_mutex_unlock(list->fork1);
@@ -40,7 +42,14 @@ int			get_sleep(t_list *list)
 {
 	list->stat = 2;
 	printf("%ld : %d is sleeping\n", gettime(g_time_start), list->philo_pos);
-	usleep(list->tts * 1000);
+	// printf("CHECK WAIT SLEEP\n");
+	// usleep(list->tts * 1000);
+	ft_wait(list->tts);
+	// while (gettime(g_time_start) < list->tts)
+	// {
+	// 	usleep(100);
+	// // printf("time = %ld\n", gettime(g_time_start));
+	// }
 	return (TRUE);
 }
 
