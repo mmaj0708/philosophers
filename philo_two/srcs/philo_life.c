@@ -6,7 +6,7 @@
 /*   By: mmaj <mmaj@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/01 09:49:37 by mmaj              #+#    #+#             */
-/*   Updated: 2021/03/02 10:48:54 by mmaj             ###   ########.fr       */
+/*   Updated: 2021/03/29 14:21:22 by mmaj             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,22 @@ int			death_checker(t_list *list, int n_philo)
 	return (0);
 }
 
+int			first_launch(t_list *list, int n_philo)
+{
+	int i;
+
+	i = 0;
+	while (i < n_philo && (list->philo_pos % 2))
+	{
+		list->tla = gettime(g_time_start) + list->ttd;
+		pthread_create(&list->th, NULL, philo_life, (void *)list);
+		list = list->next;
+		list = list->next;
+		i = i + 2;
+	}
+	return (0);
+}
+
 int			launch_philo(t_list *list, int n_philo)
 {
 	t_list	*save;
@@ -68,13 +84,17 @@ int			launch_philo(t_list *list, int n_philo)
 	save = list;
 	i = 0;
 	make_list_loop(list);
-	while (i < n_philo)
+	first_launch(list, n_philo);
+	list = save;
+	list = list->next;
+	usleep(1000);
+	while (i < n_philo && !(list->philo_pos % 2))
 	{
-		list->stat = 3;
 		list->tla = gettime(g_time_start) + list->ttd;
 		pthread_create(&list->th, NULL, philo_life, (void *)list);
 		list = list->next;
-		i++;
+		list = list->next;
+		i = i + 2;
 	}
 	death_checker(save, n_philo);
 	return (0);

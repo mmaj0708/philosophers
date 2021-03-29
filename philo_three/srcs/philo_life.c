@@ -6,7 +6,7 @@
 /*   By: mmaj <mmaj@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/01 09:49:37 by mmaj              #+#    #+#             */
-/*   Updated: 2021/03/05 14:55:23 by mmaj             ###   ########.fr       */
+/*   Updated: 2021/03/29 14:29:04 by mmaj             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ void		*death_checker(void *lst)
 	list = (t_list *)lst;
 	save = list;
 	i = 0;
-		// printf("check list->tla = %d\n", list->tla);
 	while (1)
 	{
 		if ((gettime(g_time_start) > list->tla) || list->n_meal == 0)
@@ -51,31 +50,27 @@ void		*death_checker(void *lst)
 	}
 	if (g_eatordeath == DEATH)
 	{
-		// printf("check get_time = %ld\n", gettime(g_time_start));
-		// printf("check death\n");
 		sem_wait(list->sem_print);
 		printf("%ld : %d died\n", gettime(g_time_start), list->philo_pos);
-		// free ??
 		exit(DEATH);
 	}
 	if (g_eatordeath == ATE)
 	{
-		// printf("%d all eaten\n", list->philo_pos);
 		exit(ATE); // free ??
 	}
 	return (NULL);
 }
 
-void		print_pid(t_list *list, int n_philo)
-{
-	while (n_philo > 0)
-	{
-		printf("%d has pid %d\n", list->philo_pos,list->pid);
-		list = list->next;
-		n_philo--;
-	}
-	return ;
-}
+// void		print_pid(t_list *list, int n_philo)
+// {
+// 	while (n_philo > 0)
+// 	{
+// 		printf("%d has pid %d\n", list->philo_pos,list->pid);
+// 		list = list->next;
+// 		n_philo--;
+// 	}
+// 	return ;
+// }
 
 int			launch_philo(t_list *list, int n_philo)
 {
@@ -97,6 +92,5 @@ int			launch_philo(t_list *list, int n_philo)
 		list = list->next;
 		i++;
 	}
-	// print_pid(save, n_philo);
 	return (0);
 }

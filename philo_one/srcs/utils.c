@@ -6,7 +6,7 @@
 /*   By: mmaj <mmaj@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 10:28:45 by mmaj              #+#    #+#             */
-/*   Updated: 2021/03/29 12:12:27 by mmaj             ###   ########.fr       */
+/*   Updated: 2021/03/29 13:53:29 by mmaj             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,5 @@ void		ft_wait(int time_to_wait)
 {
 	time_to_wait = gettime(g_time_start) + time_to_wait;
 	while (gettime(g_time_start) < time_to_wait)
-	{
 		usleep(100);
-	// printf("time = %ld\n", gettime(g_time_start));
-	}
 }
