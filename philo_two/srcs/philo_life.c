@@ -6,7 +6,7 @@
 /*   By: mmaj <mmaj@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/01 09:49:37 by mmaj              #+#    #+#             */
-/*   Updated: 2021/03/29 14:21:22 by mmaj             ###   ########.fr       */
+/*   Updated: 2021/03/29 16:57:25 by mmaj             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,8 @@ void		*philo_life(void *lst)
 
 int			death_checker(t_list *list, int n_philo)
 {
-	t_list		*save;
 	t_list		*last_philo;
-	int			i;
 
-	save = list;
-	i = 0;
 	while (1)
 	{
 		if ((gettime(g_time_start) >= list->tla) || g_philo_ate == n_philo)
@@ -54,7 +50,10 @@ int			death_checker(t_list *list, int n_philo)
 		list = list->next;
 	}
 	if (g_eatordeath == 0)
+	{
+		sem_wait(list->sem_print);
 		printf("%ld : %d died\n", gettime(g_time_start), last_philo->philo_pos);
+	}
 	if (g_eatordeath == 1)
 		printf("%ld : philos ate their meals!!!\n", gettime(g_time_start));
 	return (0);

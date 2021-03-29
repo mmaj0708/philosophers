@@ -6,7 +6,7 @@
 /*   By: mmaj <mmaj@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 13:50:44 by mmaj              #+#    #+#             */
-/*   Updated: 2021/03/26 14:43:23 by mmaj             ###   ########.fr       */
+/*   Updated: 2021/03/29 16:45:37 by mmaj             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,16 +45,6 @@ long int	gettime(struct timeval start)
 	return (time);
 }
 
-void		make_list_loop(t_list *list)
-{
-	t_list	*save;
-
-	save = list;
-	while (list->next != NULL)
-		list = list->next;
-	list->next = save;
-}
-
 int			destroy_all(t_list *list, int n_philo)
 {
 	int i;
@@ -68,6 +58,7 @@ int			destroy_all(t_list *list, int n_philo)
 	}
 	list = list->next;
 	sem_unlink("GNE");
+	sem_unlink("OK");
 	return (0);
 }
 
@@ -76,41 +67,11 @@ int			kill_philos(int n_philo, t_list *list)
 	int i;
 
 	i = 0;
-	
-	// print_pid(list, n_philo);
 	while (i < n_philo)
 	{
-		kill(list->pid, 0);
+		kill(list->pid, SIGKILL);
 		list = list->next;
 		i++;
-	}
-	return (0);
-}
-
-int			wait_philos(int n_philo, t_list *list)
-{
-	int			stat;
-	int			ret;
-	t_list		*head_list;
-
-	head_list = list;
-	while (g_philo_ate < n_philo)
-	{
-		wait(&stat);
-		ret = WEXITSTATUS(stat);
-		// printf("check ret = %d\n", ret);
-		if (ret == DEATH)
-		{
-			kill_philos(n_philo, head_list);
-			return (0);
-		}
-		else if (ret == ATE)
-			g_philo_ate++;
-		if (g_philo_ate == n_philo)
-		{
-			printf("all philos got their meals");
-			return (0);
-		}
 	}
 	return (0);
 }
@@ -133,7 +94,6 @@ int			main(int ac, char **av)
 	head_list = list;
 	if (init_fork(param->n_philo, head_list) == FAILURE)
 		return (0);
-	// check_list_elmt(head_list, param->n_philo);
 	launch_philo(head_list, param->n_philo);
 	wait_philos(param->n_philo, head_list);
 	destroy_all(head_list, param->n_philo);

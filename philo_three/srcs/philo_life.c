@@ -6,7 +6,7 @@
 /*   By: mmaj <mmaj@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/01 09:49:37 by mmaj              #+#    #+#             */
-/*   Updated: 2021/03/29 14:29:04 by mmaj             ###   ########.fr       */
+/*   Updated: 2021/03/29 15:51:38 by mmaj             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,9 @@ void		*philo_life(void *lst)
 void		*death_checker(void *lst)
 {
 	t_list		*list;
-	t_list		*save;
 	int			i;
-	int			eatordeath;
 
 	list = (t_list *)lst;
-	save = list;
 	i = 0;
 	while (1)
 	{
@@ -55,22 +52,19 @@ void		*death_checker(void *lst)
 		exit(DEATH);
 	}
 	if (g_eatordeath == ATE)
-	{
-		exit(ATE); // free ??
-	}
+		exit(ATE);
 	return (NULL);
 }
 
-// void		print_pid(t_list *list, int n_philo)
-// {
-// 	while (n_philo > 0)
-// 	{
-// 		printf("%d has pid %d\n", list->philo_pos,list->pid);
-// 		list = list->next;
-// 		n_philo--;
-// 	}
-// 	return ;
-// }
+void		make_list_loop(t_list *list)
+{
+	t_list	*save;
+
+	save = list;
+	while (list->next != NULL)
+		list = list->next;
+	list->next = save;
+}
 
 int			launch_philo(t_list *list, int n_philo)
 {
