@@ -6,7 +6,7 @@
 /*   By: mmaj <mmaj@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 10:06:01 by mmaj              #+#    #+#             */
-/*   Updated: 2021/03/30 12:31:32 by mmaj             ###   ########.fr       */
+/*   Updated: 2021/03/30 13:39:09 by mmaj             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,7 @@ int			init_fork(int n_philo, t_list *list)
 	sem_unlink("GNE");
 	sem_unlink("OK");
 	if ((sem_print = sem_open("OK", O_CREAT, 644, 1)) == SEM_FAILED)
-	{
-		printf("CHECK %s\n", strerror(errno));
 		return (FAILURE);
-	}
 	if ((sem = sem_open("GNE", O_CREAT, 644, n_philo)) == SEM_FAILED)
 		return (FAILURE);
 	while (i < n_philo)
