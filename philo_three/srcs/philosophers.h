@@ -23,6 +23,10 @@
 # include <signal.h>
 # include <sys/wait.h>
 # include <sys/ipc.h>
+# include <fcntl.h>
+# include <unistd.h>
+# include <stdarg.h>
+# include <string.h>
 
 # define TTD 810
 # define TTE 200
