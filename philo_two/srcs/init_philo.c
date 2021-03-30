@@ -6,11 +6,12 @@
 /*   By: mmaj <mmaj@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 10:06:01 by mmaj              #+#    #+#             */
-/*   Updated: 2021/03/29 16:50:54 by mmaj             ###   ########.fr       */
+/*   Updated: 2021/03/30 12:31:32 by mmaj             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
+#include <errno.h>
 
 int			init_fork(int n_philo, t_list *list)
 {
@@ -21,9 +22,12 @@ int			init_fork(int n_philo, t_list *list)
 	i = 0;
 	sem_unlink("GNE");
 	sem_unlink("OK");
-	if ((sem_print = sem_open("OK", 100, 0660, 1)) == SEM_FAILED)
+	if ((sem_print = sem_open("OK", O_CREAT, 644, 1)) == SEM_FAILED)
+	{
+		printf("CHECK %s\n", strerror(errno));
 		return (FAILURE);
-	if ((sem = sem_open("GNE", 100, 0660, n_philo)) == SEM_FAILED)
+	}
+	if ((sem = sem_open("GNE", O_CREAT, 644, n_philo)) == SEM_FAILED)
 		return (FAILURE);
 	while (i < n_philo)
 	{

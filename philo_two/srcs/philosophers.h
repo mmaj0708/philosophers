@@ -6,7 +6,7 @@
 /*   By: mmaj <mmaj@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/23 11:50:54 by mmaj              #+#    #+#             */
-/*   Updated: 2021/03/29 14:33:38 by mmaj             ###   ########.fr       */
+/*   Updated: 2021/03/30 12:20:09 by mmaj             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,10 @@
 # include <pthread.h>
 # include <stdlib.h>
 # include <semaphore.h>
+# include <fcntl.h>
+# include <unistd.h>
+# include <stdarg.h>
+# include <string.h>
 
 # define TTD 810
 # define TTE 200
