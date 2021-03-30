@@ -6,7 +6,7 @@
 /*   By: mmaj <mmaj@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 13:50:44 by mmaj              #+#    #+#             */
-/*   Updated: 2021/03/29 12:29:25 by mmaj             ###   ########.fr       */
+/*   Updated: 2021/03/30 11:18:07 by mmaj             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,9 @@ int			destroy_all(t_list *list, int n_philo)
 		i++;
 	}
 	list = list->next;
+	pthread_mutex_destroy(list->mut_print);
 	free(list->fork1);
+	free(list->mut_print);
 	return (0);
 }
 

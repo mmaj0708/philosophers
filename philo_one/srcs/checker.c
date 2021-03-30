@@ -6,7 +6,7 @@
 /*   By: mmaj <mmaj@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 09:03:37 by mmaj              #+#    #+#             */
-/*   Updated: 2021/03/02 10:08:42 by mmaj             ###   ########.fr       */
+/*   Updated: 2021/03/30 10:46:29 by mmaj             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,9 @@ void		check_list_elmt(t_list *list, int n_philo)
 		printf("list->tts = %d\n", list->tts);
 		printf("list->meal = %d\n", list->n_meal);
 		printf("list->alive = %d\n", list->alive);
+		printf("list->mut_print = %p\n", list->mut_print);
+		printf("list->fork1 = %p\n", list->fork1);
+		printf("list->fork2 = %p\n", list->fork2);
 		n_philo--;
 		list = list->next;
 	}

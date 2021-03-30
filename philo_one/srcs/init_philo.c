@@ -6,7 +6,7 @@
 /*   By: mmaj <mmaj@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 10:06:01 by mmaj              #+#    #+#             */
-/*   Updated: 2021/03/02 11:30:51 by mmaj             ###   ########.fr       */
+/*   Updated: 2021/03/30 11:19:44 by mmaj             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int			affect_fork(int n_philo, t_list *list)
 
 t_list		*lstnew(int i, t_param *param, int n_meal)
 {
-	t_list	*new;
+	t_list			*new;
 
 	if (!(new = malloc(sizeof(t_list))))
 		return (NULL);
@@ -50,6 +50,24 @@ t_list		*lstnew(int i, t_param *param, int n_meal)
 	new->alive = TRUE;
 	new->next = NULL;
 	return (new);
+}
+
+int			affect_mutprint(t_list *list, int n_philo)
+{
+	int				i;
+	pthread_mutex_t	*mutex_print;
+
+	i = 0;
+	if (!(mutex_print = malloc(sizeof(pthread_mutex_t))))
+		return (FAILURE);
+	pthread_mutex_init(mutex_print, NULL);
+	while (i < n_philo)
+	{
+		list->mut_print = mutex_print;
+		list = list->next;
+		i++;
+	}
+	return (0);
 }
 
 t_list		*create_philo(t_param *param, t_list *list, int n_philo, int n_meal)
@@ -71,5 +89,7 @@ t_list		*create_philo(t_param *param, t_list *list, int n_philo, int n_meal)
 		list = list->next;
 		i++;
 	}
+	if (affect_mutprint(head_list, n_philo) == FAILURE)
+		return (NULL);
 	return (head_list);
 }
