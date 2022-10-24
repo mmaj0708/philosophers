@@ -10,6 +10,7 @@
 #                                                                              #
 # **************************************************************************** #
 
+
 NAME = philo_one
 
 SRCS = srcs/checker.c srcs/main.c srcs/philo_life.c srcs/parsing.c \
